@@ -1,0 +1,299 @@
+------------------------------------------------------------
+-- 1) :
+------------------------------------------------------------
+--a)  Create table named lms_members(MEMBER_ID	MEMBER_NAME	CITY	DATE_REGISTER	DATE_EXPIRE	MEMBERSHIP_STATUS)
+
+create table lms_members
+(
+MEMBER_ID varchar2(50),
+MEMBER_NAME varchar2(50),
+CITY varchar2(50),
+DATE_REGISTER date,
+EXPIRY_DATE date,
+MEMBERSHIP_STATUS varchar2(50)
+);
+
+--b) Drop table
+DROP TABLE lms_members;
+
+--c) create the table back again
+
+create table lms_members
+(
+MEMBER_ID varchar2(50),
+MEMBER_NAME varchar(50),
+CITY varchar(50),
+DATE_REGISTER date,
+EXPIRY_DATE date,
+MEMBERSHIP_STATUS varchar(50)
+);
+
+--d) Alter the table 
+
+--d.i)  add two more columns ADDRESS	CONTACT
+ALTER TABLE lms_members ADD (ADDRESS varchar2(50), CONTACT varchar2(50));
+
+--d.ii) Modify the datatype of existing Address column to be varchar2(3999)
+ALTER TABLE lms_members MODIFY (ADDRESS varchar2(3999));
+
+--d.iii)  rename the address column name to member_address
+ALTER TABLE lms_members RENAME COLUMN ADDRESS to MEMBER_ADDRESS;
+
+--d.iv) drop the contact column
+ALTER TABLE lms_members DROP (CONTACT);
+
+--d.v) rename the table to lms_members_practice
+RENAME lms_members TO lms_members_practice;
+
+--e) Insert following data -- use to_date('12-12-2012','dd-mm-yyyy') to store the hardcoded date
+
+INSERT INTO lms_members_practice (MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS) VALUES('LM009','Nikita', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'rajori road');
+
+INSERT INTO lms_members_practice (MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS) VALUES('LM020','Supriya', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'uttam nagar');
+
+INSERT INTO lms_members_practice (MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS) VALUES('LM009','Gaurav', 'Delhi', to_date('12-12-2018','dd-mm-yyyy'),to_date('12-12-2020','dd-mm-yyyy'), 'Temporary', 'nawada');
+
+SELECT * FROM lms_members_practice;
+
+--f) delete all the rows
+DELETE FROM lms_members_practice;
+
+--g) insert all the data back in point (e)
+INSERT INTO lms_members_practice(MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS) 
+VALUES('LM009','Nikita', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'rajori road');
+
+INSERT INTO lms_members_practice(MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS) 
+VALUES('LM020','Supriya', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'uttam nagar');
+
+INSERT INTO lms_members_practice(MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS) 
+VALUES('LM009','Gaurav', 'Delhi', to_date('12-12-2018','dd-mm-yyyy'),to_date('12-12-2020','dd-mm-yyyy'), 'Temporary', 'nawada');
+
+--h) update for all rows Address column to Karnataka
+UPDATE lms_members_practice SET member_address = 'Karnataka';
+SELECT * FROM lms_members_practice;
+
+-------------------------------------------------
+UPDATE lms_members_practice SET member_address = 'rajori road'
+WHERE member_name = 'Nikita';
+
+UPDATE lms_members_practice SET member_address = 'uttam nagar'
+WHERE member_name = 'Supriya';
+
+UPDATE lms_members_practice SET member_address = 'nawada'
+WHERE member_name = 'Gaurav';
+
+UPDATE lms_members_practice SET CITY = 'Banglore';
+-------------------------------------------------
+
+--f)  TCL  -- please set your expectations by filling in ? in [? rows] before executing your code 
+--  <case 1>  -- rollback
+--	fire select to see current data in the table [? rows]
+--	insert : LM011	Gaurav	Delhi	12-12-2012	12-12-2021	Temporary	rajori road
+--	fire select to see current data in the table [? rows]
+--	rollback;
+--	fire select to see current data in the table [? rows]
+
+SELECT * FROM lms_members_practice;
+-- 3 rows
+INSERT INTO lms_members_practice(MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS)
+VALUES('LM011','Gaurav', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'rajori road');
+
+SELECT * FROM lms_members_practice;
+-- 4 rows
+
+ROLLBACK;
+
+SELECT * FROM lms_members_practice;
+-- 3 rows
+
+--<case 2> -- commit
+--	fire select to see current data in the table [? rows]
+--	insert : LM012	Gauri	Delhi	12-12-2012	12-12-2021	Temporary	uttam nagar
+--	fire select to see current data in the table [? rows]
+--	commit;
+--	fire select to see current data in the table [? rows]
+
+SELECT * FROM lms_members_practice;
+-- 3 rows
+
+INSERT INTO lms_members_practice(MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS)
+VALUES('LM012','Gaurav', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'uttam nagar');
+
+SELECT * FROM lms_members_practice;
+-- 4 rows
+
+COMMIT;
+
+SELECT * FROM lms_members_practice;
+-- 4 rows
+
+DELETE FROM lms_members_practice WHERE member_id = 'LM012';
+
+
+--<case 3> -- rollback to savepoint 
+--	fire select to see current data in the table [? rows]
+--	create a savepoint named s1
+--	insert : LM013	Pratik	Delhi	12-12-2012	12-12-2021	Temporary	uttam nagar
+--	create a savepoint named s2
+--	insert : LM014	Deepak	Delhi	12-12-2012	12-12-2021	Temporary	uttam nagar
+--	fire select to see current data in the table [? rows]
+--	rollback to savepoint s2;
+--	fire select to see current data in the table [? rows]
+
+SELECT * FROM lms_members_practice;
+-- 3 rows
+
+EXEC SAVEPOINT s1;
+
+INSERT INTO lms_members_practice(MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS)
+VALUES('LM013','Pratik', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'uttam nagar');
+
+EXEC SAVEPOINT s2;
+
+INSERT INTO lms_members_practice(MEMBER_ID, MEMBER_NAME, CITY, DATE_REGISTER, EXPIRY_DATE, MEMBERSHIP_STATUS, MEMBER_ADDRESS)
+VALUES('LM014','Deepak', 'Delhi', to_date('12-12-2012','dd-mm-yyyy'),to_date('12-12-2021','dd-mm-yyyy'), 'Temporary', 'uttam nagar');
+
+SELECT * FROM lms_members_practice;
+-- 5 rows
+
+ROLLBACK TO s2;
+
+SELECT * FROM lms_members_practice;
+-- 4 rows
+
+
+--DELETE FROM lms_members_practice WHERE member_id in ('LM013', 'LM014'); 
+--------------------------------------------------------------------------
+-------------------------------------------------------
+-- 2 :
+--------------------------------------------------------
+
+--a) Create table named lms_suppliers_details(SUPPLIER_ID varchar2,SUPPLIER_NAME varchar2,ADDRESS	varchar2, CONTACT number,EMAIL varchar2)
+CREATE TABLE lms_suppliers_details
+(
+SUPPLIER_ID varchar2(50),
+SUPPLIER_NAME varchar2(50),
+ADDRESS	varchar2(50), 
+CONTACT number,
+EMAIL varchar2(50)
+);
+
+--b) Drop table 
+DROP TABLE lms_suppliers_details;
+
+--c) create the table back again
+CREATE TABLE lms_suppliers_details
+(
+SUPPLIER_ID varchar2(50),
+SUPPLIER_NAME varchar2(50),
+ADDRESS	varchar2(50), 
+CONTACT number,
+EMAIL varchar2(50)
+);
+
+--d) Alter the table
+--d.i) add two more columns BLOOD_GROUP VARCHAR2, COUNTRY VARCHAR2
+ALTER TABLE lms_suppliers_details ADD (blood_group varchar2(5), country VARCHAR2(50));
+
+--d.ii) rename the COUNTRY column name to member_COUNTRY
+ALTER TABLE lms_suppliers_details RENAME COLUMN country TO member_country;
+
+--d.iii) Modify the BLOOD_GROUP to varchar2(3008)  
+ALTER TABLE lms_suppliers_details MODIFY(blood_group varchar2(3008));
+
+--d.iv) drop the BLOOD_GROUP column
+ALTER TABLE lms_suppliers_details DROP COLUMN blood_group;
+
+--d.v) rename the table to lms_suppliers_details_p
+RENAME lms_suppliers_details TO lms_suppliers_details_p;
+
+--e) Insert following data 
+--S01	SINGAPORE SHOPPEE	CHENNAI	9894123555	sing@gmail.com  India
+--S02	JK Stores	MUMBAI	9940123450	jks@yahoo.com India
+--S03	ROSE BOOK STORE	TRIVANDRUM	9444411222	rose@gmail.com India
+--S04	KAVARI STORE	DELHI	8630001452	kavi@redif.com India
+
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S01', 'SINGAPORE SHOPPEE', 'CHENNAI', 9894123555, 'sing@gmail.com' , 'India');
+
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S02', 'JK Stores', 'MUMBAI', 9940123450, 'jks@yahoo.com' , 'India');
+
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S03', 'JROSE BOOK STORE', 'TRIVANDRUM', 9444411222, 'rose@gmail.com' , 'India');
+
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S04', 'KAVARI STORE', 'DELHI', 8630001452, 'kavi@redif.com' , 'India');
+
+--f) delete all the rows
+DELETE FROM lms_suppliers_details_p;
+
+--g) insert the data back again in point (e)
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S01', 'SINGAPORE SHOPPEE', 'CHENNAI', 9894123555, 'sing@gmail.com' , 'India');
+
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S02', 'JK Stores', 'MUMBAI', 9940123450, 'jks@yahoo.com' , 'India');
+
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S03', 'JROSE BOOK STORE', 'TRIVANDRUM', 9444411222, 'rose@gmail.com' , 'India');
+
+INSERT INTO lms_suppliers_details_p(SUPPLIER_ID, SUPPLIER_NAME, ADDRESS, CONTACT, EMAIL, member_country)
+VALUES('S04', 'KAVARI STORE', 'DELHI', 8630001452, 'kavi@redif.com' , 'India');
+
+--h) update for all rows country column to 'USA'
+UPDATE lms_suppliers_details_p SET member_country = 'USA';
+
+
+------------------------------
+--demo on Integrity constraint
+------------------------------
+-- create the table 
+CREATE TABLE MY_FIRST_TABLE
+(
+NAME VARCHAR2(100),
+ROLLNO NUMBER ,
+DATE_OF_ENROLLMENT DATE
+);
+
+desc MY_FIRST_TABLE;
+
+select  * FrOM  MY_FIRST_TABLE;
+insert into MY_FIRST_TABLE(ROLLNO) values (1);
+-- duplicate insert
+insert into MY_FIRST_TABLE(ROLLNO) values (1);
+-- null insert
+insert into MY_FIRST_TABLE(ROLLNO) values (null);
+
+-- a) primary key rollno (Unique + not null )
+
+drop TABLE MY_FIRST_TABLE;
+
+CREATE TABLE MY_FIRST_TABLE
+(
+ROLLNO NUMBER,
+NAME VARCHAR2(100),
+DATE_OF_ENROLLMENT DATE,
+constraint cons1 primary key(rollno)
+);
+
+desc MY_FIRST_TABLE;
+
+select  * FrOM  MY_FIRST_TABLE;
+
+insert into MY_FIRST_TABLE(ROLLNO) values (1);
+
+-- duplicate insert
+insert into MY_FIRST_TABLE(ROLLNO) values (1);
+--not allowed in primary key
+
+-- null insert
+insert into MY_FIRST_TABLE(ROLLNO) values (null);
+--not allowed in primary key
+
+select * from user_constraints ;
+-- DROPPING THE CONSTRAINT
+ALTER TABLE MY_FIRST_TABLE drop constraint cons1;
+
+-- adding THE CONSTRAINT
+ALTER TABLE MY_FIRST_TABLE add constraint cons1 primary key(rollno);

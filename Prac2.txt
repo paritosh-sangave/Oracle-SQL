@@ -1,0 +1,62 @@
+CREATE TABLE first_table
+(
+number_col number,
+float_col number(5,2),
+date_col date,
+timestamp_col timestamp,
+timestampTZ_col timestamp with time zone,
+varchar2_col varchar2(100)
+);
+
+DESCRIBE first_table;
+select * from first_table;
+
+/* three ways you can get date for a column*/
+SELECT sysdate FROM dual; 
+--27-OCT-22
+
+SELECT current_date FROM dual; 
+--27-OCT-22
+
+select to_date('01-01-2022','dd-mm-yyyy') from dual; 
+--01-JAN-22
+
+/* three ways you can get timestamp value for a column*/
+select systimestamp from dual;
+--27-OCT-22 06.04.06.872186 PM +00:00
+
+select current_timestamp from dual;
+--27-OCT-22 11.04.33.438769 AM US/PACIFIC
+
+select to_timestamp('01-JAN-2022 13:00:00:1234','dd-mon-yyyy hh24:mi:ss:FF') FROM dual;
+--01-JAN-22 01.00.00.123400 PM
+
+-- display purposes
+alter session set nls_date_format = 'dd-mm-yyyy hh24:mi:ss';
+
+alter session set nls_timestamp_format = 'dd-mm-yyyy hh24:mi:ss.ff';
+
+--example of ordering by date
+select * from first_table where number_col = 33 order by date_col desc;
+
+--INSERT INTO MY_FIRST_TABLE(COLUMN_LIST) VALUES (VALUE_LIST);
+INSERT INTO first_table(NUMBER_COL, FLOAT_COL, DATE_COL, TIMESTAMP_COL, TIMESTAMPTZ_COL, VARCHAR2_COL)
+VALUES (4, 2.5, to_date('26-10-2022','dd-mm-yyyy'), 
+to_timestamp('01-JAN-2022 13:00:00:1238','dd-mon-yyyy hh24:mi:ss:FF'),
+systimestamp, 'The_first_row');
+
+INSERT INTO first_table(NUMBER_COL, FLOAT_COL, DATE_COL, TIMESTAMP_COL, TIMESTAMPTZ_COL)
+VALUES (2, 2.7, current_date, current_timestamp, current_timestamp);
+
+INSERT INTO first_table(NUMBER_COL, FLOAT_COL, DATE_COL, TIMESTAMP_COL, TIMESTAMPTZ_COL)
+VALUES (2, 2.2, current_date, current_timestamp, current_timestamp);
+
+INSERT INTO first_table(NUMBER_COL, FLOAT_COL, DATE_COL, TIMESTAMP_COL)
+VALUES (2, 3.3, current_date, current_timestamp);
+
+-- invalid case for number(5,2) --- 3 digits before point and 2 digits after point
+INSERT INTO first_table(NUMBER_COL, FLOAT_COL, DATE_COL, TIMESTAMP_COL, TIMESTAMPTZ_COL)
+VALUES (2, 9991.91, current_date, current_timestamp, current_timestamp);
+
+INSERT INTO first_table(NUMBER_COL, FLOAT_COL, DATE_COL, TIMESTAMP_COL, TIMESTAMPTZ_COL)
+VALUES (2, 999.913, current_date, current_timestamp, current_timestamp);
